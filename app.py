@@ -25,6 +25,81 @@ st.set_page_config(
     layout="wide",
 )
 
+# ---------------------------------------------------------------
+# Custom styling — thermal "ironbow" theme (dark, professional)
+# ---------------------------------------------------------------
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+.stApp {
+    background: radial-gradient(ellipse 900px 600px at 10% -10%, rgba(198,17,111,0.16), transparent 60%),
+                radial-gradient(ellipse 800px 600px at 100% 0%, rgba(255,90,0,0.12), transparent 60%),
+                #0A0810;
+    color: #F3F1EE;
+}
+
+section[data-testid="stSidebar"] {
+    background: #14111A;
+    border-right: 1px solid #2A2534;
+}
+
+h1, h2, h3 {
+    font-family: 'Oswald', sans-serif !important;
+    letter-spacing: 0.3px;
+}
+h1 { text-transform: uppercase; }
+
+p, span, label, div { font-family: 'Inter', sans-serif; }
+
+/* Metric cards */
+div[data-testid="stMetric"] {
+    background: linear-gradient(180deg, #15111A, #1D1721);
+    border: 1px solid #332A38;
+    border-radius: 8px;
+    padding: 14px 18px;
+}
+div[data-testid="stMetricValue"] {
+    font-family: 'Oswald', sans-serif !important;
+    background: linear-gradient(180deg, #FFF3C4, #FF5A00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Primary button (Run Live Analysis) */
+button[kind="primary"] {
+    background: linear-gradient(90deg, #C6116F, #FF5A00) !important;
+    border: none !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 13px !important;
+}
+
+/* Progress bar */
+div[data-testid="stProgress"] div[role="progressbar"] > div {
+    background: linear-gradient(90deg, #6A0DAD, #E01E5A, #FF5A00) !important;
+}
+
+/* AI Dispatch box */
+div[data-testid="column"]:nth-of-type(2) {
+    border-left: 3px solid #FF5A00;
+    padding-left: 20px;
+}
+
+/* Download button */
+button[data-testid="stDownloadButton"] {
+    background: #17E8CC !important;
+    color: #0A0810 !important;
+    font-weight: 600 !important;
+    border: none !important;
+}
+
+hr { border-color: #2A2534 !important; }
+</style>
+""", unsafe_allow_html=True)
+
 @st.cache_resource
 def get_client():
     return FortyGuardClient()
@@ -264,8 +339,8 @@ simple_mode = st.sidebar.toggle("👷 Simple View (for workers)", value=False,
                                   help="Big text, icons, no technical numbers — for any age or literacy level")
 run = st.sidebar.button("Run Live Analysis", type="primary", use_container_width=True)
 
-st.title("HeatIQ — Heat Operations Command Center")
-st.caption("Hyperlocal thermal telemetry, converted into operational decisions. Built on the FortyGuard Temperature API.")
+st.title("🌡️ HeatIQ — Heat Operations Command Center")
+st.caption("Hyperlocal thermal telemetry, converted into operational decisions. Not just where it's hot — what to do about it. Built on the FortyGuard Temperature API.")
 
 if run:
     aoi = make_aoi(SITES[site_name]["coords"])
