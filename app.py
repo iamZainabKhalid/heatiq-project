@@ -30,24 +30,25 @@ st.set_page_config(
 # ---------------------------------------------------------------
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap');
 
 .stApp {
-    background: #F4F6FB;
+    background: linear-gradient(180deg, #F9FAFC, #E8ECF7);
     color: #1B2340;
 }
 
 * { font-family: 'Inter', sans-serif !important; }
 
-/* Sidebar — dark navy */
 section[data-testid="stSidebar"] {
     background: #14213D;
     border-right: none;
+    box-shadow: 4px 0 14px rgba(20,33,61,0.2);
 }
 section[data-testid="stSidebar"] * { color: #E8ECF7 !important; }
 section[data-testid="stSidebar"] h1 {
+    font-family: 'Poppins', sans-serif !important;
     color: #FFFFFF !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     border-left: 5px solid #F0651E;
     padding-left: 14px;
 }
@@ -57,18 +58,21 @@ section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
     background: #FFFFFF !important;
     border-radius: 10px !important;
     border: 1px solid #2C3E66 !important;
+    transition: all 0.3s ease;
+}
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div:hover {
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
 section[data-testid="stSidebar"] div[data-baseweb="select"] div,
 section[data-testid="stSidebar"] div[data-baseweb="select"] span {
     color: #14213D !important;
 }
-
-/* Dropdown menu list (when opened) */
 div[data-baseweb="popover"] li { color: #14213D !important; }
 
 /* Main headings */
 h1 {
-    font-weight: 800 !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
     font-size: 2.2rem !important;
     color: #14213D !important;
     letter-spacing: -0.02em;
@@ -78,7 +82,7 @@ h1 {
 h2, h3 { font-weight: 700 !important; color: #14213D !important; }
 p, span, label, li { color: #5B6584; }
 
-/* Metric cards — white, rounded, soft shadow, warm top accent */
+/* Metric cards — white, rounded, soft shadow, warm accent, hover lift */
 div[data-testid="stMetric"] {
     background: #FFFFFF;
     border: 1px solid #E7EAF3;
@@ -86,32 +90,39 @@ div[data-testid="stMetric"] {
     border-radius: 14px;
     padding: 18px 22px;
     box-shadow: 0 4px 16px rgba(240,101,30,0.08);
+    transition: all 0.25s ease-in-out;
 }
-div[data-testid="stMetricValue"] {
-    color: #F0651E !important;
-    font-weight: 800 !important;
+div[data-testid="stMetric"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(240,101,30,0.15);
 }
+div[data-testid="stMetricValue"] { color: #F0651E !important; font-weight: 800 !important; }
 div[data-testid="stMetricLabel"] { color: #8891AC !important; font-weight: 600 !important; }
 div[data-testid="stMetricDelta"] { color: #F0651E !important; }
 
-/* Primary button — warm heat gradient */
+/* Primary button — warm heat gradient with hover lift */
 button[kind="primary"] {
     background: linear-gradient(90deg, #F0651E, #E8492E) !important;
     border: none !important;
     font-weight: 700 !important;
     border-radius: 10px !important;
     box-shadow: 0 4px 14px rgba(240,101,30,0.35);
+    transition: all 0.25s ease-in-out;
 }
-button[kind="primary"]:hover { background: linear-gradient(90deg, #D9560F, #D93E24) !important; }
+button[kind="primary"]:hover {
+    transform: scale(1.03);
+    background: linear-gradient(90deg, #D9560F, #D93E24) !important;
+}
 
-/* Sidebar toggle — orange when on */
-section[data-testid="stSidebar"] div[data-testid="stToggle"] label { color: #E8ECF7 !important; }
-section[data-testid="stSidebar"] div[role="switch"][aria-checked="true"] { background: #F0651E !important; }
-
-/* Progress bar */
+/* Progress bar with glow pulse */
 div[data-testid="stProgress"] div[role="progressbar"] > div {
     background: #E8492E !important;
     border-radius: 6px;
+    animation: progressGlow 2s infinite alternate;
+}
+@keyframes progressGlow {
+    from { box-shadow: 0 0 6px rgba(232,73,46,0.4); }
+    to { box-shadow: 0 0 12px rgba(232,73,46,0.8); }
 }
 
 /* Download button */
@@ -131,10 +142,7 @@ div[data-testid="stAlert"] {
     box-shadow: 0 2px 10px rgba(20,33,61,0.05);
 }
 
-/* Section divider */
 hr { border-color: #E7EAF3 !important; }
-
-/* Caption text under title */
 [data-testid="stCaptionContainer"] { color: #8891AC !important; }
 </style>
 """, unsafe_allow_html=True)
