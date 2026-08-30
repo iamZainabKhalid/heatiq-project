@@ -26,74 +26,75 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------
-# Custom styling — thermal "ironbow" theme (dark, professional)
+# Custom styling — clean, professional dark theme
 # ---------------------------------------------------------------
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap');
 
 .stApp {
-    background: radial-gradient(ellipse 900px 600px at 10% -10%, rgba(198,17,111,0.16), transparent 60%),
-                radial-gradient(ellipse 800px 600px at 100% 0%, rgba(255,90,0,0.12), transparent 60%),
-                #0A0810;
-    color: #F3F1EE;
+    background: #0E0C12;
+    color: #EDEBEF;
 }
 
+* { font-family: 'Inter', sans-serif !important; }
+
 section[data-testid="stSidebar"] {
-    background: #14111A;
+    background: #16131C;
     border-right: 1px solid #2A2534;
 }
 
-h1, h2, h3 {
-    font-family: 'Oswald', sans-serif !important;
-    letter-spacing: 0.3px;
+h1 {
+    font-weight: 800 !important;
+    font-size: 2.4rem !important;
+    letter-spacing: -0.02em;
+    color: #FFFFFF !important;
 }
-h1 { text-transform: uppercase; }
+h2, h3 { font-weight: 700 !important; color: #FFFFFF !important; }
 
-p, span, label, div { font-family: 'Inter', sans-serif; }
+p, span, label, div, li { color: #C9C6D1; }
 
 /* Metric cards */
 div[data-testid="stMetric"] {
-    background: linear-gradient(180deg, #15111A, #1D1721);
-    border: 1px solid #332A38;
-    border-radius: 8px;
-    padding: 14px 18px;
+    background: #1A1721;
+    border: 1px solid #322C3D;
+    border-radius: 10px;
+    padding: 16px 20px;
 }
 div[data-testid="stMetricValue"] {
-    font-family: 'Oswald', sans-serif !important;
-    background: linear-gradient(180deg, #FFF3C4, #FF5A00);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #FF7A45 !important;
+    font-weight: 700 !important;
 }
+div[data-testid="stMetricLabel"] { color: #9691A0 !important; }
 
 /* Primary button (Run Live Analysis) */
 button[kind="primary"] {
-    background: linear-gradient(90deg, #C6116F, #FF5A00) !important;
+    background: #E8492E !important;
     border: none !important;
     font-weight: 600 !important;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    font-size: 13px !important;
+    border-radius: 8px !important;
 }
+button[kind="primary"]:hover { background: #D93E24 !important; }
 
 /* Progress bar */
 div[data-testid="stProgress"] div[role="progressbar"] > div {
-    background: linear-gradient(90deg, #6A0DAD, #E01E5A, #FF5A00) !important;
-}
-
-/* AI Dispatch box */
-div[data-testid="column"]:nth-of-type(2) {
-    border-left: 3px solid #FF5A00;
-    padding-left: 20px;
+    background: #E8492E !important;
 }
 
 /* Download button */
 button[data-testid="stDownloadButton"] {
-    background: #17E8CC !important;
-    color: #0A0810 !important;
-    font-weight: 600 !important;
+    background: #1DB3A0 !important;
+    color: #0E0C12 !important;
+    font-weight: 700 !important;
     border: none !important;
+    border-radius: 8px !important;
+}
+
+/* Info box */
+div[data-testid="stAlert"] {
+    background: #1A1721 !important;
+    border: 1px solid #322C3D !important;
+    border-radius: 10px !important;
 }
 
 hr { border-color: #2A2534 !important; }
@@ -333,13 +334,13 @@ def generate_printable_report(risk_data, schedule_data, location):
 # ---------------------------------------------------------------
 # UI — sidebar controls
 # ---------------------------------------------------------------
-st.sidebar.title("🌡️ HeatIQ Controls")
+st.sidebar.title("HeatIQ Controls")
 site_name = st.sidebar.selectbox("Monitored site", list(SITES.keys()))
 simple_mode = st.sidebar.toggle("👷 Simple View (for workers)", value=False,
                                   help="Big text, icons, no technical numbers — for any age or literacy level")
 run = st.sidebar.button("Run Live Analysis", type="primary", use_container_width=True)
 
-st.title("🌡️ HeatIQ — Heat Operations Command Center")
+st.title("HeatIQ — Heat Operations Command Center")
 st.caption("Hyperlocal thermal telemetry, converted into operational decisions. Not just where it's hot — what to do about it. Built on the FortyGuard Temperature API.")
 
 if run:
