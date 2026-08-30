@@ -7,7 +7,8 @@ work schedule for outdoor crews.
 
 import os
 import pathlib
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
+import pytz
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -20,45 +21,166 @@ from fortyguard import FortyGuardClient
 load_dotenv(pathlib.Path(__file__).parent / ".env")
 
 st.set_page_config(
-    page_title="HeatIQ — Phoenix Heat Operations Center",
+    page_title="HeatIQ — Global Heat Operations Center",
     page_icon="🌡️",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 # ---------------------------------------------------------------
-# Professional & Attractive Custom Styling
+# Professional & Attractive Custom Styling with Animations
 # ---------------------------------------------------------------
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ---- Keyframe Animations ---- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.15); }
+    50% { box-shadow: 0 0 50px rgba(255, 107, 53, 0.35); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(60px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ripple {
+    0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4); }
+    100% { box-shadow: 0 0 0 20px rgba(255, 107, 53, 0); }
+}
 
 /* ---- Base ---- */
 .stApp {
-    background: #F5F7FA;
+    background: linear-gradient(135deg, #F0F4FA 0%, #E8EDF7 50%, #DCE3F0 100%);
     color: #1A2332;
+    animation: fadeInUp 0.8s ease-out;
 }
 
 * {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
+/* Hide Streamlit's default keyboard shortcut indicator */
+.st-keyboard-shortcut-indicator,
+div[data-testid="stKeyboardShortcut"],
+button[data-testid="baseButton-header"],
+.stApp > header,
+[data-testid="stHeader"],
+[data-testid="stDecoration"] {
+    display: none !important;
+}
+
+/* ---- Live Status Bar ---- */
+.live-status {
+    background: linear-gradient(135deg, #0B1A2F, #1A3A5C);
+    border-radius: 16px;
+    padding: 12px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeInDown 0.6s ease-out;
+    box-shadow: 0 4px 20px rgba(11, 26, 47, 0.2);
+}
+
+.live-status .dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    animation: pulseGlow 1.5s infinite;
+}
+
+.live-status .dot.live {
+    background: #00E676;
+}
+
+.live-status .dot.error {
+    background: #FF1744;
+}
+
+.live-status .text {
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+}
+
+.live-status .time {
+    color: #A0B8D4;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+}
+
 /* ---- Sidebar ---- */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0B1A2F, #142B44);
+    background: linear-gradient(180deg, #0B1A2F 0%, #0D2137 40%, #142B44 100%);
     border-right: none;
-    box-shadow: 6px 0 24px rgba(0,0,0,0.15);
+    box-shadow: 8px 0 32px rgba(0,0,0,0.15);
+    animation: fadeInLeft 0.6s ease-out;
 }
 
 section[data-testid="stSidebar"] * {
     color: #E8EDF5 !important;
 }
 
-section[data-testid="stSidebar"] h1 {
+section[data-testid="stSidebar"] .stMarkdown h1,
+section[data-testid="stSidebar"] .stMarkdown h2,
+section[data-testid="stSidebar"] .stMarkdown h3 {
     font-family: 'Space Grotesk', sans-serif !important;
     font-weight: 700 !important;
-    font-size: 1.8rem !important;
-    color: #FFFFFF !important;
-    background: linear-gradient(90deg, #FF6B35, #FF8F5E);
+}
+
+section[data-testid="stSidebar"] .stMarkdown h3 {
+    font-size: 1.3rem !important;
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E, #FFB088);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     padding-left: 0;
@@ -66,25 +188,64 @@ section[data-testid="stSidebar"] h1 {
     letter-spacing: -0.02em;
 }
 
+.sidebar-brand {
+    text-align: center;
+    padding: 20px 0 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 20px;
+}
+
+.sidebar-brand .logo-icon {
+    font-size: 3rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.sidebar-brand .brand-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sidebar-brand .brand-sub {
+    font-size: 0.7rem;
+    color: #8899B0 !important;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
 section[data-testid="stSidebar"] .stSelectbox label {
     font-weight: 600 !important;
     color: #A0B8D4 !important;
-    font-size: 0.85rem !important;
+    font-size: 0.75rem !important;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
     border-radius: 12px !important;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
     transition: all 0.3s ease;
 }
 
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div:hover {
-    background: rgba(255,255,255,0.15) !important;
+    background: rgba(255,255,255,0.1) !important;
     border-color: #FF6B35 !important;
+    box-shadow: 0 0 20px rgba(255,107,53,0.1);
+}
+
+section[data-testid="stSidebar"] div[data-baseweb="select"] div[role="combobox"] {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+section[data-testid="stSidebar"] div[data-baseweb="select"] input {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
 }
 
 section[data-testid="stSidebar"] div[data-baseweb="select"] * {
@@ -92,69 +253,98 @@ section[data-testid="stSidebar"] div[data-baseweb="select"] * {
     -webkit-text-fill-color: #FFFFFF !important;
 }
 
+div[data-baseweb="popover"] {
+    background: #0B1A2F !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(12px);
+}
+
+div[data-baseweb="popover"] * {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+div[data-baseweb="popover"] li {
+    transition: all 0.2s ease;
+}
+
+div[data-baseweb="popover"] li:hover {
+    background: rgba(255,107,53,0.15) !important;
+}
+
 section[data-testid="stSidebar"] .stToggle {
-    margin-top: 12px;
+    margin-top: 16px;
 }
 
 section[data-testid="stSidebar"] .stToggle label {
     font-weight: 500 !important;
     color: #A0B8D4 !important;
+    font-size: 0.85rem !important;
 }
 
 section[data-testid="stSidebar"] hr {
-    border-color: rgba(255,255,255,0.08) !important;
-    margin: 20px 0;
+    border-color: rgba(255,255,255,0.06) !important;
+    margin: 24px 0;
 }
 
-/* Sidebar button */
+/* Sidebar button with pulse animation */
 section[data-testid="stSidebar"] button[kind="primary"] {
     background: linear-gradient(135deg, #FF6B35, #E84A1E) !important;
     border: none !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
     font-weight: 700 !important;
     font-size: 1rem !important;
-    padding: 0.6rem 1rem !important;
-    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.35) !important;
+    padding: 0.8rem 1rem !important;
+    box-shadow: 0 4px 25px rgba(255, 107, 53, 0.4) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.05em;
+    animation: pulseGlow 2s infinite, ripple 2s infinite;
 }
 
 section[data-testid="stSidebar"] button[kind="primary"]:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 30px rgba(255, 107, 53, 0.5) !important;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 40px rgba(255, 107, 53, 0.6) !important;
     background: linear-gradient(135deg, #FF7A4A, #D93E14) !important;
+    animation-play-state: paused;
 }
 
 /* ---- Main Headings ---- */
 h1 {
     font-family: 'Space Grotesk', sans-serif !important;
     font-weight: 800 !important;
-    font-size: 2.5rem !important;
+    font-size: 2.8rem !important;
     color: #0B1A2F !important;
     letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #0B1A2F, #1A3A5C);
+    background: linear-gradient(135deg, #0B1A2F 0%, #1A3A5C 50%, #2A4A6C 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     padding-bottom: 4px;
+    animation: fadeInUp 0.8s ease-out;
 }
 
 h1::after {
     content: '';
     display: block;
-    width: 60px;
+    width: 80px;
     height: 4px;
-    background: linear-gradient(90deg, #FF6B35, #FF8F5E);
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E, #FFB088);
     border-radius: 4px;
-    margin-top: 8px;
+    margin-top: 10px;
+    animation: shimmer 3s infinite linear;
+    background-size: 200% auto;
 }
 
-h2, h3 {
+h2 {
     font-weight: 700 !important;
     color: #0B1A2F !important;
+    animation: fadeInUp 0.9s ease-out;
 }
 
 h3 {
+    font-weight: 700 !important;
+    color: #0B1A2F !important;
     font-size: 1.1rem !important;
     letter-spacing: -0.01em;
 }
@@ -163,25 +353,71 @@ p, span, label, li {
     color: #4A5A72;
 }
 
-/* ---- Metric Cards (Glassmorphism + Gradient Accent) ---- */
-div[data-testid="stMetric"] {
+/* ---- Weather Widget ---- */
+.weather-widget {
     background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.6);
-    border-top: 4px solid #FF6B35;
     border-radius: 20px;
     padding: 20px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+    animation: fadeInUp 0.7s ease-out;
+    transition: all 0.3s ease;
+}
+
+.weather-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+
+.weather-widget .temp-large {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #0B1A2F;
+    line-height: 1;
+}
+
+.weather-widget .temp-large .deg {
+    font-size: 2rem;
+    color: #FF6B35;
+}
+
+.weather-widget .weather-icon {
+    font-size: 3.5rem;
+    animation: float 4s ease-in-out infinite;
+}
+
+.weather-widget .detail-item {
+    font-size: 0.85rem;
+    color: #6A7B94;
+    padding: 4px 0;
+}
+
+.weather-widget .detail-item strong {
+    color: #0B1A2F;
+}
+
+/* ---- Metric Cards (Glassmorphism + Gradient Accent + Hover Animation) ---- */
+div[data-testid="stMetric"] {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-top: 4px solid #FF6B35;
+    border-radius: 20px;
+    padding: 22px 26px;
     box-shadow: 
         0 8px 32px rgba(0,0,0,0.06),
         0 2px 8px rgba(0,0,0,0.03);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.7s ease-out;
 }
 
 div[data-testid="stMetric"]:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px) scale(1.02);
     box-shadow: 
-        0 16px 48px rgba(255, 107, 53, 0.12),
+        0 20px 60px rgba(255, 107, 53, 0.12),
         0 4px 12px rgba(0,0,0,0.05);
     border-color: rgba(255, 107, 53, 0.3);
 }
@@ -189,16 +425,16 @@ div[data-testid="stMetric"]:hover {
 div[data-testid="stMetricValue"] {
     color: #0B1A2F !important;
     font-weight: 800 !important;
-    font-size: 2.2rem !important;
+    font-size: 2.4rem !important;
     letter-spacing: -0.02em;
 }
 
 div[data-testid="stMetricLabel"] {
     color: #6A7B94 !important;
     font-weight: 600 !important;
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
 }
 
 div[data-testid="stMetricDelta"] {
@@ -206,80 +442,74 @@ div[data-testid="stMetricDelta"] {
     font-weight: 700 !important;
 }
 
-/* ---- Risk Grade Badge ---- */
-.risk-badge {
-    display: inline-block;
-    padding: 4px 16px;
-    border-radius: 100px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-/* ---- Progress Bar ---- */
+/* ---- Progress Bar with Pulse Animation ---- */
 div[data-testid="stProgress"] div[role="progressbar"] > div {
-    background: linear-gradient(90deg, #FF6B35, #FF8F5E) !important;
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E, #FFB088) !important;
     border-radius: 100px;
-    height: 8px !important;
-    box-shadow: 0 0 20px rgba(255, 107, 53, 0.25);
+    height: 10px !important;
+    animation: pulseGlow 2s infinite;
 }
 
 div[data-testid="stProgress"] {
     background: #E8EDF5 !important;
     border-radius: 100px;
-    height: 8px !important;
+    height: 10px !important;
 }
 
-/* ---- Buttons ---- */
+/* ---- Buttons with Hover Animation ---- */
 button[kind="primary"] {
     background: linear-gradient(135deg, #FF6B35, #E84A1E) !important;
     border: none !important;
     font-weight: 700 !important;
-    border-radius: 12px !important;
-    padding: 0.6rem 1.8rem !important;
-    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3) !important;
+    border-radius: 14px !important;
+    padding: 0.7rem 2rem !important;
+    box-shadow: 0 4px 25px rgba(255, 107, 53, 0.3) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    animation: fadeInUp 1s ease-out;
 }
 
 button[kind="primary"]:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.45) !important;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 40px rgba(255, 107, 53, 0.5) !important;
 }
 
 /* ---- Download Button ---- */
 button[data-testid="stDownloadButton"] {
-    background: #0B1A2F !important;
+    background: linear-gradient(135deg, #0B1A2F, #1A3A5C) !important;
     color: #FFFFFF !important;
     font-weight: 700 !important;
     border: none !important;
-    border-radius: 12px !important;
-    padding: 0.6rem 1.8rem !important;
+    border-radius: 14px !important;
+    padding: 0.7rem 2rem !important;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(11, 26, 47, 0.2);
 }
 
 button[data-testid="stDownloadButton"]:hover {
-    background: #1A3A5C !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(11, 26, 47, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(11, 26, 47, 0.3);
+    background: linear-gradient(135deg, #1A3A5C, #2A4A6C) !important;
 }
 
 /* ---- Info / Alert Boxes ---- */
 div[data-testid="stAlert"] {
     background: rgba(255,255,255,0.85) !important;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.5) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-    padding: 16px 20px !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.4) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    padding: 18px 24px !important;
+    animation: fadeInUp 0.8s ease-out;
 }
 
-/* ---- Divider ---- */
+/* ---- Divider with Animation ---- */
 hr {
     border: none !important;
     height: 2px !important;
-    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.2), transparent) !important;
-    margin: 28px 0 !important;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.15), transparent) !important;
+    margin: 32px 0 !important;
+    animation: shimmer 4s infinite linear;
+    background-size: 200% auto;
 }
 
 /* ---- Caption ---- */
@@ -289,25 +519,26 @@ hr {
     font-weight: 400 !important;
 }
 
-/* ---- Column Cards for Schedule Comparison ---- */
+/* ---- Schedule Cards ---- */
 .schedule-card {
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(8px);
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.5);
-    border-radius: 16px;
-    padding: 16px 20px;
+    border-radius: 18px;
+    padding: 20px 24px;
     text-align: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.7s ease-out;
 }
 
 .schedule-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.08);
 }
 
 .schedule-card .temp {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 800;
     color: #0B1A2F;
 }
@@ -315,11 +546,34 @@ hr {
 .schedule-card .label {
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     color: #6A7B94;
+    font-weight: 600;
 }
 
-/* ---- Simple View Big Icons ---- */
+.schedule-card .status-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ---- Risk Banner ---- */
+.risk-banner {
+    animation: fadeInUp 0.8s ease-out, float 4s ease-in-out infinite;
+    border-radius: 20px;
+}
+
+/* ---- Spinner ---- */
+.stSpinner > div {
+    border-color: #FF6B35 !important;
+    border-top-color: transparent !important;
+}
+
+/* ---- Simple View Icons ---- */
 .simple-icon {
     font-size: 3rem;
     line-height: 1.2;
@@ -331,10 +585,32 @@ hr {
     color: #0B1A2F;
 }
 
-/* ---- Responsive fine-tune ---- */
+/* ---- Timestamp ---- */
+.timestamp {
+    font-family: 'JetBrains Mono', monospace;
+    color: #8899B0;
+    font-size: 0.8rem;
+    background: rgba(255,255,255,0.5);
+    padding: 4px 14px;
+    border-radius: 100px;
+    display: inline-block;
+}
+
+/* ---- Responsive ---- */
 @media (max-width: 768px) {
-    h1 { font-size: 1.8rem !important; }
+    h1 { font-size: 2rem !important; }
     div[data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+    section[data-testid="stSidebar"] { animation: none; }
+    .weather-widget .temp-large { font-size: 2.5rem; }
+    .live-status { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+/* ---- Gradient Text Utility ---- */
+.gradient-text {
+    background: linear-gradient(135deg, #FF6B35, #FF8F5E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -346,7 +622,7 @@ def get_client():
 client = get_client()
 
 # ---------------------------------------------------------------
-# Site presets — real US cities with known extreme-heat exposure
+# Site presets with timezone info
 # ---------------------------------------------------------------
 SITES = {
     "Phoenix, AZ — Industrial Sector": {
@@ -354,21 +630,36 @@ SITES = {
             [-112.090, 33.440], [-112.060, 33.440],
             [-112.060, 33.460], [-112.090, 33.460],
             [-112.090, 33.440],
-        ]
+        ],
+        "timezone": "America/Phoenix",
+        "emoji": "☀️",
     },
     "Houston, TX — Port District": {
         "coords": [
             [-95.290, 29.730], [-95.260, 29.730],
             [-95.260, 29.750], [-95.290, 29.750],
             [-95.290, 29.730],
-        ]
+        ],
+        "timezone": "America/Chicago",
+        "emoji": "🌊",
     },
     "Las Vegas, NV — Construction Corridor": {
         "coords": [
             [-115.160, 36.150], [-115.130, 36.150],
             [-115.130, 36.170], [-115.160, 36.170],
             [-115.160, 36.150],
-        ]
+        ],
+        "timezone": "America/Los_Angeles",
+        "emoji": "🏗️",
+    },
+    "Miami, FL — Port & Logistics": {
+        "coords": [
+            [-80.220, 25.760], [-80.190, 25.760],
+            [-80.190, 25.780], [-80.220, 25.780],
+            [-80.220, 25.760],
+        ],
+        "timezone": "America/New_York",
+        "emoji": "🌴",
     },
 }
 
@@ -383,7 +674,7 @@ def make_aoi(coords):
     }
 
 # ---------------------------------------------------------------
-# Core engine functions (same logic as original)
+# Core engine functions
 # ---------------------------------------------------------------
 def get_heat_index(polygon_aoi, date_str):
     coords = polygon_aoi["features"][0]["geometry"]["coordinates"][0]
@@ -431,6 +722,7 @@ def compare_schedules(polygon_aoi, date_str):
         "Standard (8AM–5PM)": {"start": "08:00", "end": "17:00"},
         "Early Shift (6AM–3PM)": {"start": "06:00", "end": "15:00"},
         "Split Shift (7AM–11AM)": {"start": "07:00", "end": "11:00"},
+        "Night Shift (10PM–6AM)": {"start": "22:00", "end": "06:00"},
     }
     results = {}
     for name, times in schedules.items():
@@ -456,22 +748,22 @@ def get_recommendation(risk_data, schedule_data, location):
     safest_name, safest_data = min(schedule_data.items(), key=lambda x: x[1]["avg_temp_f"])
 
     if grade == "CRITICAL":
-        action = "Suspend all non-essential outdoor work during peak hours and enforce 15-minute breaks every 2 hours, consistent with OSHA's proposed High-Heat Trigger standard."
+        action = "🛑 SUSPEND all non-essential outdoor work during peak hours. Enforce 15-min breaks every 2 hours."
     elif grade == "HIGH":
-        action = "Enforce paid rest breaks (15 min every 2 hours), consistent with OSHA's proposed High-Heat Trigger standard."
+        action = "⚠️ Enforce mandatory rest breaks (15 min every 2 hours). Provide hydration stations and shaded areas."
+    elif grade == "MODERATE":
+        action = "👀 Monitor conditions closely. Ensure hydration and shade protocols are active."
     else:
-        action = "Continue standard hydration and shade protocols; monitor for changes."
+        action = "✅ Continue standard protocols. Stay vigilant for changing conditions."
 
-    still_exceeds = "still exceeds" if safest_data["exceeds_osha"] else "stays within"
+    still_exceeds = "⚠️ still exceeds" if safest_data["exceeds_osha"] else "✅ stays within"
 
     return (
-        f"**{grade} risk** at {location}, exceeding OSHA's proposed 90°F High-Heat threshold for "
+        f"**{grade}** risk at **{location}** — OSHA's 90°F High-Heat threshold exceeded for "
         f"**{percent}%** of the past week.\n\n"
-        f"**Recommendation:** {action}\n\n"
-        f"Of the schedules evaluated, **\"{safest_name}\"** shows the lowest average exposure "
-        f"at **{safest_data['avg_temp_f']}°F**. Even so, this {still_exceeds} OSHA limits — "
-        f"hydration stations, shaded rest areas, and buddy-system monitoring remain essential "
-        f"regardless of schedule."
+        f"**📋 Recommendation:** {action}\n\n"
+        f"**🏆 Safest Schedule:** **{safest_name}** with **{safest_data['avg_temp_f']}°F** average exposure. "
+        f"This {still_exceeds} OSHA limits — hydration, shade, and buddy-system monitoring remain essential."
     )
 
 
@@ -540,18 +832,18 @@ def generate_printable_report(risk_data, schedule_data, location):
   <div class="rules">
     <div class="rule"><span class="icon">💧</span> Drink water every 30 minutes — even if not thirsty</div>
     <div class="rule"><span class="icon">🏠</span> Rest in shade or indoors every 2 hours</div>
-    <div class="rule"><span class="icon">⏰</span> Take a 15-minute break every 2 hours — recommended under OSHA's proposed heat rule</div>
+    <div class="rule"><span class="icon">⏰</span> Take a 15-minute break every 2 hours</div>
     <div class="rule"><span class="icon">👥</span> Never work alone — check on your partner often</div>
-    <div class="rule"><span class="icon">🚨</span> Dizzy, sick, or confused? STOP and tell your supervisor immediately</div>
+    <div class="rule"><span class="icon">🚨</span> Dizzy, sick, or confused? STOP and tell your supervisor</div>
   </div>
 
   <div class="best-time">
-    ✅ <b>Safest work window today:</b> {safest_name} ({safest_data['avg_temp_f']}°F average)
+    ✅ <b>Safest work window:</b> {safest_name} ({safest_data['avg_temp_f']}°F average)
   </div>
 
   <div class="footer">
-    Generated by HeatIQ using real-time FortyGuard temperature data · OSHA's proposed High-Heat Trigger: 90°F<br>
-    Print this page and post it where workers can see it. No phone or internet needed to read it.
+    Generated by HeatIQ · OSHA's proposed High-Heat Trigger: 90°F<br>
+    Print and post where workers can see it.
   </div>
 
 </body></html>"""
@@ -561,43 +853,91 @@ def generate_printable_report(risk_data, schedule_data, location):
 # UI — sidebar controls
 # ---------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### 🌡️ HeatIQ")
-    st.markdown("Controls")
-    site_name = st.selectbox("Monitored site", list(SITES.keys()))
-    simple_mode = st.toggle("👷 Simple View (for workers)", value=False,
-                                  help="Big text, icons, no technical numbers — for any age or literacy level")
-    run = st.button("Run Live Analysis", type="primary", use_container_width=True)
+    st.markdown("""
+    <div class="sidebar-brand">
+        <div class="logo-icon">🌡️</div>
+        <div class="brand-name">HeatIQ</div>
+        <div class="brand-sub">AI Heat Operations</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    site_name = st.selectbox("📍 Monitored Site", list(SITES.keys()))
+    simple_mode = st.toggle("👷 Simple View", value=False,
+                                  help="Big text, icons, no technical numbers")
+    run = st.button("🚀 Run Live Analysis", type="primary", use_container_width=True)
+
+# ---------------------------------------------------------------
+# Live Status Bar with Date/Time
+# ---------------------------------------------------------------
+current_time = datetime.now().strftime("%A, %B %d, %Y • %I:%M %p")
+st.markdown(f"""
+<div class="live-status">
+    <div>
+        <span class="dot live"></span>
+        <span class="text">🟢 SYSTEM LIVE — Real-time monitoring active</span>
+    </div>
+    <div>
+        <span class="time">📅 {current_time}</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------
 # Main Content
 # ---------------------------------------------------------------
-st.title("Heat Operations Command Center")
-st.caption("Hyperlocal thermal telemetry, converted into operational decisions. Built on the FortyGuard Temperature API.")
+col_title, col_weather = st.columns([2, 1])
+
+with col_title:
+    st.title("Heat Operations Command Center")
+    st.caption("⚡ Hyperlocal thermal telemetry • AI-powered operational decisions • Built on FortyGuard Temperature API")
+
+with col_weather:
+    site_emoji = SITES[site_name]["emoji"]
+    st.markdown(f"""
+    <div class="weather-widget">
+        <div style="display:flex; align-items:center; gap:16px;">
+            <div class="weather-icon">{site_emoji}</div>
+            <div>
+                <div class="temp-large">{site_name.split(',')[0]}<span class="deg">°</span></div>
+                <div style="color:#6A7B94; font-size:0.85rem; font-weight:500;">
+                    {site_name.split('—')[1].strip() if '—' in site_name else ''}
+                </div>
+            </div>
+        </div>
+        <div style="display:flex; gap:20px; margin-top:12px; flex-wrap:wrap; border-top:1px solid rgba(0,0,0,0.05); padding-top:12px;">
+            <div class="detail-item"><strong>🕐</strong> {datetime.now().strftime('%I:%M %p')}</div>
+            <div class="detail-item"><strong>📅</strong> {datetime.now().strftime('%b %d, %Y')}</div>
+            <div class="detail-item"><strong>📍</strong> {site_name.split(',')[0]}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("---")
 
 if run:
     aoi = make_aoi(SITES[site_name]["coords"])
     end_date = date.today().isoformat()
     start_date = (date.today() - timedelta(days=7)).isoformat()
 
-    with st.spinner("Pulling live temperature data from FortyGuard..."):
+    with st.spinner("🌡️ Pulling live temperature data from FortyGuard..."):
         exceedance = client.create_heatmap(
             polygon_aoi=aoi,
             start_date=start_date,
             end_date=end_date,
             filter_type=4,
             analytic_type="exceedance",
-            threshold=32.2,          # 90°F in Celsius = OSHA High-Heat Trigger
+            threshold=32.2,
             direction="above",
             granularity=100,
         )
         ex_stats = exceedance["result"]["stats_data"]
         risk = get_osha_risk_grade(ex_stats["mean"], total_hours=168)
 
-    with st.spinner("Comparing work schedules..."):
+    with st.spinner("📊 Comparing work schedules..."):
         yesterday = (date.today() - timedelta(days=1)).isoformat()
         schedules = compare_schedules(aoi, yesterday)
 
-    with st.spinner("Checking humidity-adjusted heat index..."):
+    with st.spinner("💧 Checking humidity-adjusted heat index..."):
         try:
             heat_index = get_heat_index(aoi, yesterday)
         except Exception:
@@ -635,12 +975,14 @@ if "results" in st.session_state:
         t = grade_text.get(risk["risk_grade"], "DANGER")
 
         st.markdown(
-            f"""<div style="background:{c}; color:white; text-align:center; padding:40px 20px; border-radius:16px; margin-bottom:20px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-                <div style="font-size:70px;">{e}</div>
-                <div style="font-size:36px; font-weight:800; letter-spacing:1px;">{t}</div>
+            f"""<div class="risk-banner" style="background:{c}; color:white; text-align:center; padding:50px 20px; border-radius:20px; margin-bottom:24px; box-shadow: 0 8px 40px rgba(0,0,0,0.15);">
+                <div style="font-size:80px;">{e}</div>
+                <div style="font-size:42px; font-weight:800; letter-spacing:1px;">{t}</div>
+                <div style="font-size:18px; opacity:0.9; margin-top:8px;">{site_name}</div>
             </div>""",
             unsafe_allow_html=True,
         )
+        
         col1, col2 = st.columns(2)
         with col1:
             st.markdown("### 💧 Drink water every 30 minutes")
@@ -670,12 +1012,12 @@ if "results" in st.session_state:
                 delta_color="off"
             )
             st.progress(min(risk["percent_time_exceeded"] / 100, 1.0))
-            st.write(f"**Hours above 90°F:** {risk['hours_above_threshold']} / 168")
-            st.write(f"**Zones monitored:** {ex_stats['n_cells']}")
+            st.write(f"**⏱️ Hours above 90°F:** {risk['hours_above_threshold']} / 168")
+            st.write(f"**📊 Zones monitored:** {ex_stats['n_cells']}")
             if heat_index.get("apparent_temp_f") is not None:
-                st.write(f"**Heat Index (feels-like):** {heat_index['apparent_temp_f']}°F")
-                st.write(f"**Relative Humidity:** {heat_index['humidity_pct']}%")
-                st.caption("OSHA's 80°F/90°F triggers are based on heat index, not raw air temperature — this accounts for humidity too.")
+                st.write(f"**🌡️ Heat Index (feels-like):** {heat_index['apparent_temp_f']}°F")
+                st.write(f"**💧 Relative Humidity:** {heat_index['humidity_pct']}%")
+                st.caption("OSHA triggers are based on heat index (temp + humidity), not raw air temperature.")
 
         with col2:
             st.subheader("⚠️ AI Dispatch")
@@ -686,12 +1028,16 @@ if "results" in st.session_state:
         sched_cols = st.columns(len(schedules))
         for col, (name, data) in zip(sched_cols, schedules.items()):
             with col:
+                status_color = "#B00020" if data["exceeds_osha"] else "#1B7A3D"
+                status_text = "⚠️ Exceeds OSHA" if data["exceeds_osha"] else "✅ Within limits"
                 st.markdown(f"""
                 <div class="schedule-card">
                     <div class="label">{name}</div>
                     <div class="temp">{data['avg_temp_f']}°F</div>
-                    <div style="font-size:0.8rem; font-weight:600; color:{'#B00020' if data['exceeds_osha'] else '#1B7A3D'};">
-                        {'⚠️ Exceeds OSHA' if data['exceeds_osha'] else '✅ Within limits'}
+                    <div>
+                        <span class="status-badge" style="background:{status_color}20; color:{status_color}; border:1px solid {status_color}40;">
+                            {status_text}
+                        </span>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -709,3 +1055,14 @@ if "results" in st.session_state:
 
 elif "results" not in st.session_state:
     st.info("👈 Select a site in the sidebar and click **Run Live Analysis** to pull real-time heat data.")
+
+# ---------------------------------------------------------------
+# Footer
+# ---------------------------------------------------------------
+st.markdown("""
+<div style="text-align:center; padding:30px 0 10px 0; color:#8899B0; font-size:0.8rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:40px;">
+    🌡️ <strong>HeatIQ</strong> — AI Heat Operations Planner &nbsp;•&nbsp; 
+    Powered by FortyGuard Temperature API &nbsp;•&nbsp; 
+    OSHA High-Heat Trigger: 90°F
+</div>
+""", unsafe_allow_html=True)
