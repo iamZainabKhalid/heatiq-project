@@ -70,22 +70,6 @@ st.markdown("""
     50% { transform: translateY(-8px) rotate(2deg); }
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-@keyframes slideInUp {
-    from { opacity: 0; transform: translateY(60px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes scaleIn {
     from { opacity: 0; transform: scale(0.8); }
     to { opacity: 1; transform: scale(1); }
@@ -142,10 +126,6 @@ button[data-testid="baseButton-header"],
     background: #00E676;
 }
 
-.live-status .dot.error {
-    background: #FF1744;
-}
-
 .live-status .text {
     color: #FFFFFF;
     font-weight: 600;
@@ -169,23 +149,6 @@ section[data-testid="stSidebar"] {
 
 section[data-testid="stSidebar"] * {
     color: #E8EDF5 !important;
-}
-
-section[data-testid="stSidebar"] .stMarkdown h1,
-section[data-testid="stSidebar"] .stMarkdown h2,
-section[data-testid="stSidebar"] .stMarkdown h3 {
-    font-family: 'Space Grotesk', sans-serif !important;
-    font-weight: 700 !important;
-}
-
-section[data-testid="stSidebar"] .stMarkdown h3 {
-    font-size: 1.3rem !important;
-    background: linear-gradient(90deg, #FF6B35, #FF8F5E, #FFB088);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    padding-left: 0;
-    border: none;
-    letter-spacing: -0.02em;
 }
 
 .sidebar-brand {
@@ -263,10 +226,6 @@ div[data-baseweb="popover"] {
 div[data-baseweb="popover"] * {
     color: #FFFFFF !important;
     -webkit-text-fill-color: #FFFFFF !important;
-}
-
-div[data-baseweb="popover"] li {
-    transition: all 0.2s ease;
 }
 
 div[data-baseweb="popover"] li:hover {
@@ -349,10 +308,6 @@ h3 {
     letter-spacing: -0.01em;
 }
 
-p, span, label, li {
-    color: #4A5A72;
-}
-
 /* ---- Weather Widget ---- */
 .weather-widget {
     background: rgba(255,255,255,0.85);
@@ -398,7 +353,7 @@ p, span, label, li {
     color: #0B1A2F;
 }
 
-/* ---- Metric Cards (Glassmorphism + Gradient Accent + Hover Animation) ---- */
+/* ---- Metric Cards ---- */
 div[data-testid="stMetric"] {
     background: rgba(255,255,255,0.85);
     backdrop-filter: blur(16px);
@@ -407,18 +362,14 @@ div[data-testid="stMetric"] {
     border-top: 4px solid #FF6B35;
     border-radius: 20px;
     padding: 22px 26px;
-    box-shadow: 
-        0 8px 32px rgba(0,0,0,0.06),
-        0 2px 8px rgba(0,0,0,0.03);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     animation: fadeInUp 0.7s ease-out;
 }
 
 div[data-testid="stMetric"]:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 
-        0 20px 60px rgba(255, 107, 53, 0.12),
-        0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 20px 60px rgba(255, 107, 53, 0.12);
     border-color: rgba(255, 107, 53, 0.3);
 }
 
@@ -442,7 +393,7 @@ div[data-testid="stMetricDelta"] {
     font-weight: 700 !important;
 }
 
-/* ---- Progress Bar with Pulse Animation ---- */
+/* ---- Progress Bar ---- */
 div[data-testid="stProgress"] div[role="progressbar"] > div {
     background: linear-gradient(90deg, #FF6B35, #FF8F5E, #FFB088) !important;
     border-radius: 100px;
@@ -456,7 +407,7 @@ div[data-testid="stProgress"] {
     height: 10px !important;
 }
 
-/* ---- Buttons with Hover Animation ---- */
+/* ---- Buttons ---- */
 button[kind="primary"] {
     background: linear-gradient(135deg, #FF6B35, #E84A1E) !important;
     border: none !important;
@@ -465,7 +416,6 @@ button[kind="primary"] {
     padding: 0.7rem 2rem !important;
     box-shadow: 0 4px 25px rgba(255, 107, 53, 0.3) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    animation: fadeInUp 1s ease-out;
 }
 
 button[kind="primary"]:hover {
@@ -489,34 +439,6 @@ button[data-testid="stDownloadButton"]:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 32px rgba(11, 26, 47, 0.3);
     background: linear-gradient(135deg, #1A3A5C, #2A4A6C) !important;
-}
-
-/* ---- Info / Alert Boxes ---- */
-div[data-testid="stAlert"] {
-    background: rgba(255,255,255,0.85) !important;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.4) !important;
-    border-radius: 18px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    padding: 18px 24px !important;
-    animation: fadeInUp 0.8s ease-out;
-}
-
-/* ---- Divider with Animation ---- */
-hr {
-    border: none !important;
-    height: 2px !important;
-    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.15), transparent) !important;
-    margin: 32px 0 !important;
-    animation: shimmer 4s infinite linear;
-    background-size: 200% auto;
-}
-
-/* ---- Caption ---- */
-[data-testid="stCaptionContainer"] {
-    color: #8899B0 !important;
-    font-size: 0.85rem !important;
-    font-weight: 400 !important;
 }
 
 /* ---- Schedule Cards ---- */
@@ -567,50 +489,33 @@ hr {
     border-radius: 20px;
 }
 
-/* ---- Spinner ---- */
-.stSpinner > div {
-    border-color: #FF6B35 !important;
-    border-top-color: transparent !important;
+/* ---- Info / Alert Boxes ---- */
+div[data-testid="stAlert"] {
+    background: rgba(255,255,255,0.85) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.4) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    padding: 18px 24px !important;
+    animation: fadeInUp 0.8s ease-out;
 }
 
-/* ---- Simple View Icons ---- */
-.simple-icon {
-    font-size: 3rem;
-    line-height: 1.2;
-}
-
-.simple-text {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #0B1A2F;
-}
-
-/* ---- Timestamp ---- */
-.timestamp {
-    font-family: 'JetBrains Mono', monospace;
-    color: #8899B0;
-    font-size: 0.8rem;
-    background: rgba(255,255,255,0.5);
-    padding: 4px 14px;
-    border-radius: 100px;
-    display: inline-block;
+/* ---- Divider ---- */
+hr {
+    border: none !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.15), transparent) !important;
+    margin: 32px 0 !important;
+    animation: shimmer 4s infinite linear;
+    background-size: 200% auto;
 }
 
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
     h1 { font-size: 2rem !important; }
     div[data-testid="stMetricValue"] { font-size: 1.6rem !important; }
-    section[data-testid="stSidebar"] { animation: none; }
     .weather-widget .temp-large { font-size: 2.5rem; }
     .live-status { flex-direction: column; gap: 8px; text-align: center; }
-}
-
-/* ---- Gradient Text Utility ---- */
-.gradient-text {
-    background: linear-gradient(135deg, #FF6B35, #FF8F5E);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 800;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -622,7 +527,7 @@ def get_client():
 client = get_client()
 
 # ---------------------------------------------------------------
-# Site presets with timezone info
+# Site presets
 # ---------------------------------------------------------------
 SITES = {
     "Phoenix, AZ — Industrial Sector": {
@@ -631,8 +536,8 @@ SITES = {
             [-112.060, 33.460], [-112.090, 33.460],
             [-112.090, 33.440],
         ],
-        "timezone": "America/Phoenix",
         "emoji": "☀️",
+        "timezone": "America/Phoenix",
     },
     "Houston, TX — Port District": {
         "coords": [
@@ -640,8 +545,8 @@ SITES = {
             [-95.260, 29.750], [-95.290, 29.750],
             [-95.290, 29.730],
         ],
-        "timezone": "America/Chicago",
         "emoji": "🌊",
+        "timezone": "America/Chicago",
     },
     "Las Vegas, NV — Construction Corridor": {
         "coords": [
@@ -649,8 +554,8 @@ SITES = {
             [-115.130, 36.170], [-115.160, 36.170],
             [-115.160, 36.150],
         ],
-        "timezone": "America/Los_Angeles",
         "emoji": "🏗️",
+        "timezone": "America/Los_Angeles",
     },
     "Miami, FL — Port & Logistics": {
         "coords": [
@@ -658,8 +563,8 @@ SITES = {
             [-80.190, 25.780], [-80.220, 25.780],
             [-80.220, 25.760],
         ],
-        "timezone": "America/New_York",
         "emoji": "🌴",
+        "timezone": "America/New_York",
     },
 }
 
@@ -793,7 +698,7 @@ def generate_printable_report(risk_data, schedule_data, location):
 <style>
   @media print {{ body {{ margin: 0; }} }}
   body {{
-    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     max-width: 800px; margin: 0 auto; padding: 40px 30px;
     color: #1a1a1a;
     background: #FFFFFF;
@@ -830,11 +735,11 @@ def generate_printable_report(risk_data, schedule_data, location):
   </div>
 
   <div class="rules">
-    <div class="rule"><span class="icon">💧</span> Drink water every 30 minutes — even if not thirsty</div>
-    <div class="rule"><span class="icon">🏠</span> Rest in shade or indoors every 2 hours</div>
+    <div class="rule"><span class="icon">💧</span> Drink water every 30 minutes</div>
+    <div class="rule"><span class="icon">🏠</span> Rest in shade every 2 hours</div>
     <div class="rule"><span class="icon">⏰</span> Take a 15-minute break every 2 hours</div>
-    <div class="rule"><span class="icon">👥</span> Never work alone — check on your partner often</div>
-    <div class="rule"><span class="icon">🚨</span> Dizzy, sick, or confused? STOP and tell your supervisor</div>
+    <div class="rule"><span class="icon">👥</span> Never work alone — check on your partner</div>
+    <div class="rule"><span class="icon">🚨</span> Dizzy, sick, or confused? STOP</div>
   </div>
 
   <div class="best-time">
@@ -842,8 +747,7 @@ def generate_printable_report(risk_data, schedule_data, location):
   </div>
 
   <div class="footer">
-    Generated by HeatIQ · OSHA's proposed High-Heat Trigger: 90°F<br>
-    Print and post where workers can see it.
+    Generated by HeatIQ · OSHA High-Heat Trigger: 90°F
   </div>
 
 </body></html>"""
@@ -867,9 +771,14 @@ with st.sidebar:
     run = st.button("🚀 Run Live Analysis", type="primary", use_container_width=True)
 
 # ---------------------------------------------------------------
-# Live Status Bar with Date/Time
+# Live Status Bar with Date/Time using pytz
 # ---------------------------------------------------------------
-current_time = datetime.now().strftime("%A, %B %d, %Y • %I:%M %p")
+# Get timezone for selected site
+tz_str = SITES[site_name]["timezone"]
+tz = pytz.timezone(tz_str)
+current_time_tz = datetime.now(tz)
+current_time_str = current_time_tz.strftime("%A, %B %d, %Y • %I:%M %p")
+
 st.markdown(f"""
 <div class="live-status">
     <div>
@@ -877,7 +786,7 @@ st.markdown(f"""
         <span class="text">🟢 SYSTEM LIVE — Real-time monitoring active</span>
     </div>
     <div>
-        <span class="time">📅 {current_time}</span>
+        <span class="time">📅 {current_time_str} ({tz_str})</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -893,6 +802,9 @@ with col_title:
 
 with col_weather:
     site_emoji = SITES[site_name]["emoji"]
+    site_time = datetime.now(pytz.timezone(SITES[site_name]["timezone"])).strftime('%I:%M %p')
+    site_date = datetime.now(pytz.timezone(SITES[site_name]["timezone"])).strftime('%b %d, %Y')
+    
     st.markdown(f"""
     <div class="weather-widget">
         <div style="display:flex; align-items:center; gap:16px;">
@@ -905,8 +817,8 @@ with col_weather:
             </div>
         </div>
         <div style="display:flex; gap:20px; margin-top:12px; flex-wrap:wrap; border-top:1px solid rgba(0,0,0,0.05); padding-top:12px;">
-            <div class="detail-item"><strong>🕐</strong> {datetime.now().strftime('%I:%M %p')}</div>
-            <div class="detail-item"><strong>📅</strong> {datetime.now().strftime('%b %d, %Y')}</div>
+            <div class="detail-item"><strong>🕐</strong> {site_time}</div>
+            <div class="detail-item"><strong>📅</strong> {site_date}</div>
             <div class="detail-item"><strong>📍</strong> {site_name.split(',')[0]}</div>
         </div>
     </div>
@@ -1004,7 +916,6 @@ if "results" in st.session_state:
         col1, col2 = st.columns([1, 2])
 
         with col1:
-            risk_color = {"CRITICAL": "#B00020", "HIGH": "#D35400", "MODERATE": "#B8860B", "LOW": "#1B7A3D"}.get(risk["risk_grade"], "#0B1A2F")
             st.metric(
                 label="OSHA Exposure Index",
                 value=f"{risk['percent_time_exceeded']}%",
