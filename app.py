@@ -63,12 +63,10 @@ section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div:hover {
     box-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
-section[data-testid="stSidebar"] div[data-baseweb="select"] div {
-    color: #14213D !important;
-}
-
-section[data-testid="stSidebar"] div[data-baseweb="select"] span {
-    color: #14213D !important;
+section[data-testid="stSidebar"] div[data-baseweb="select"] * {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+    fill: black !important;
 }
 div[data-baseweb="popover"] * { color: #14213D !important; }
 div[data-baseweb="popover"] { background: #FFFFFF !important; }
