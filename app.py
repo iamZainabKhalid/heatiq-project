@@ -26,126 +26,316 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------
-# Custom styling — clean light dashboard, navy sidebar, card-based
+# Professional & Attractive Custom Styling
 # ---------------------------------------------------------------
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
 
+/* ---- Base ---- */
 .stApp {
-    background: linear-gradient(180deg, #F9FAFC, #E8ECF7);
-    color: #1B2340;
+    background: #F5F7FA;
+    color: #1A2332;
 }
 
-* { font-family: 'Inter', sans-serif !important; }
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
 
+/* ---- Sidebar ---- */
 section[data-testid="stSidebar"] {
-    background: #14213D;
+    background: linear-gradient(180deg, #0B1A2F, #142B44);
     border-right: none;
-    box-shadow: 4px 0 14px rgba(20,33,61,0.2);
-}
-section[data-testid="stSidebar"] * { color: #E8ECF7 !important; }
-section[data-testid="stSidebar"] h1 {
-    font-family: 'Poppins', sans-serif !important;
-    color: #FFFFFF !important;
-    font-weight: 700 !important;
-    border-left: 5px solid #F0651E;
-    padding-left: 14px;
+    box-shadow: 6px 0 24px rgba(0,0,0,0.15);
 }
 
-/* Sidebar dropdown */
+section[data-testid="stSidebar"] * {
+    color: #E8EDF5 !important;
+}
+
+section[data-testid="stSidebar"] h1 {
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1.8rem !important;
+    color: #FFFFFF !important;
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-left: 0;
+    border: none;
+    letter-spacing: -0.02em;
+}
+
+section[data-testid="stSidebar"] .stSelectbox label {
+    font-weight: 600 !important;
+    color: #A0B8D4 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    background: #FFFFFF !important;
-    border-radius: 10px !important;
-    border: 1px solid #2C3E66 !important;
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(4px);
     transition: all 0.3s ease;
 }
+
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div:hover {
-    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15) !important;
+    border-color: #FF6B35 !important;
 }
+
 section[data-testid="stSidebar"] div[data-baseweb="select"] * {
-    color: black !important;
-    -webkit-text-fill-color: black !important;
-    fill: black !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
 }
-div[data-baseweb="popover"] * { color: #14213D !important; }
-div[data-baseweb="popover"] { background: #FFFFFF !important; }
 
-/* Main headings */
-h1 {
-    font-family: 'Poppins', sans-serif !important;
+section[data-testid="stSidebar"] .stToggle {
+    margin-top: 12px;
+}
+
+section[data-testid="stSidebar"] .stToggle label {
+    font-weight: 500 !important;
+    color: #A0B8D4 !important;
+}
+
+section[data-testid="stSidebar"] hr {
+    border-color: rgba(255,255,255,0.08) !important;
+    margin: 20px 0;
+}
+
+/* Sidebar button */
+section[data-testid="stSidebar"] button[kind="primary"] {
+    background: linear-gradient(135deg, #FF6B35, #E84A1E) !important;
+    border: none !important;
+    border-radius: 12px !important;
     font-weight: 700 !important;
-    font-size: 2.2rem !important;
-    color: #14213D !important;
-    letter-spacing: -0.02em;
-    border-left: 5px solid #F0651E;
-    padding-left: 16px;
+    font-size: 1rem !important;
+    padding: 0.6rem 1rem !important;
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
-h2, h3 { font-weight: 700 !important; color: #14213D !important; }
-p, span, label, li { color: #5B6584; }
 
-/* Metric cards — white, rounded, soft shadow, warm accent, hover lift */
+section[data-testid="stSidebar"] button[kind="primary"]:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(255, 107, 53, 0.5) !important;
+    background: linear-gradient(135deg, #FF7A4A, #D93E14) !important;
+}
+
+/* ---- Main Headings ---- */
+h1 {
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 2.5rem !important;
+    color: #0B1A2F !important;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #0B1A2F, #1A3A5C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-bottom: 4px;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E);
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+h2, h3 {
+    font-weight: 700 !important;
+    color: #0B1A2F !important;
+}
+
+h3 {
+    font-size: 1.1rem !important;
+    letter-spacing: -0.01em;
+}
+
+p, span, label, li {
+    color: #4A5A72;
+}
+
+/* ---- Metric Cards (Glassmorphism + Gradient Accent) ---- */
 div[data-testid="stMetric"] {
-    background: #FFFFFF;
-    border: 1px solid #E7EAF3;
-    border-top: 3px solid #F0651E;
-    border-radius: 14px;
-    padding: 18px 22px;
-    box-shadow: 0 4px 16px rgba(240,101,30,0.08);
-    transition: all 0.25s ease-in-out;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.6);
+    border-top: 4px solid #FF6B35;
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: 
+        0 8px 32px rgba(0,0,0,0.06),
+        0 2px 8px rgba(0,0,0,0.03);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-div[data-testid="stMetric"]:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(240,101,30,0.15);
-}
-div[data-testid="stMetricValue"] { color: #F0651E !important; font-weight: 800 !important; }
-div[data-testid="stMetricLabel"] { color: #8891AC !important; font-weight: 600 !important; }
-div[data-testid="stMetricDelta"] { color: #F0651E !important; }
 
-/* Primary button — warm heat gradient with hover lift */
+div[data-testid="stMetric"]:hover {
+    transform: translateY(-6px);
+    box-shadow: 
+        0 16px 48px rgba(255, 107, 53, 0.12),
+        0 4px 12px rgba(0,0,0,0.05);
+    border-color: rgba(255, 107, 53, 0.3);
+}
+
+div[data-testid="stMetricValue"] {
+    color: #0B1A2F !important;
+    font-weight: 800 !important;
+    font-size: 2.2rem !important;
+    letter-spacing: -0.02em;
+}
+
+div[data-testid="stMetricLabel"] {
+    color: #6A7B94 !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+div[data-testid="stMetricDelta"] {
+    color: #FF6B35 !important;
+    font-weight: 700 !important;
+}
+
+/* ---- Risk Grade Badge ---- */
+.risk-badge {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ---- Progress Bar ---- */
+div[data-testid="stProgress"] div[role="progressbar"] > div {
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E) !important;
+    border-radius: 100px;
+    height: 8px !important;
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.25);
+}
+
+div[data-testid="stProgress"] {
+    background: #E8EDF5 !important;
+    border-radius: 100px;
+    height: 8px !important;
+}
+
+/* ---- Buttons ---- */
 button[kind="primary"] {
-    background: linear-gradient(90deg, #F0651E, #E8492E) !important;
+    background: linear-gradient(135deg, #FF6B35, #E84A1E) !important;
     border: none !important;
     font-weight: 700 !important;
-    border-radius: 10px !important;
-    box-shadow: 0 4px 14px rgba(240,101,30,0.35);
-    transition: all 0.25s ease-in-out;
+    border-radius: 12px !important;
+    padding: 0.6rem 1.8rem !important;
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
 button[kind="primary"]:hover {
-    transform: scale(1.03);
-    background: linear-gradient(90deg, #D9560F, #D93E24) !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.45) !important;
 }
 
-/* Progress bar with glow pulse */
-div[data-testid="stProgress"] div[role="progressbar"] > div {
-    background: #E8492E !important;
-    border-radius: 6px;
-    animation: progressGlow 2s infinite alternate;
-}
-@keyframes progressGlow {
-    from { box-shadow: 0 0 6px rgba(232,73,46,0.4); }
-    to { box-shadow: 0 0 12px rgba(232,73,46,0.8); }
-}
-
-/* Download button */
+/* ---- Download Button ---- */
 button[data-testid="stDownloadButton"] {
-    background: #14213D !important;
+    background: #0B1A2F !important;
     color: #FFFFFF !important;
     font-weight: 700 !important;
     border: none !important;
-    border-radius: 10px !important;
+    border-radius: 12px !important;
+    padding: 0.6rem 1.8rem !important;
+    transition: all 0.3s ease;
 }
 
-/* Info / alert box */
+button[data-testid="stDownloadButton"]:hover {
+    background: #1A3A5C !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(11, 26, 47, 0.25);
+}
+
+/* ---- Info / Alert Boxes ---- */
 div[data-testid="stAlert"] {
-    background: #FFFFFF !important;
-    border: 1px solid #E7EAF3 !important;
-    border-radius: 14px !important;
-    box-shadow: 0 2px 10px rgba(20,33,61,0.05);
+    background: rgba(255,255,255,0.85) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.5) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    padding: 16px 20px !important;
 }
 
-hr { border-color: #E7EAF3 !important; }
-[data-testid="stCaptionContainer"] { color: #8891AC !important; }
+/* ---- Divider ---- */
+hr {
+    border: none !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.2), transparent) !important;
+    margin: 28px 0 !important;
+}
+
+/* ---- Caption ---- */
+[data-testid="stCaptionContainer"] {
+    color: #8899B0 !important;
+    font-size: 0.85rem !important;
+    font-weight: 400 !important;
+}
+
+/* ---- Column Cards for Schedule Comparison ---- */
+.schedule-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 16px;
+    padding: 16px 20px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+
+.schedule-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+.schedule-card .temp {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0B1A2F;
+}
+
+.schedule-card .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6A7B94;
+}
+
+/* ---- Simple View Big Icons ---- */
+.simple-icon {
+    font-size: 3rem;
+    line-height: 1.2;
+}
+
+.simple-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0B1A2F;
+}
+
+/* ---- Responsive fine-tune ---- */
+@media (max-width: 768px) {
+    h1 { font-size: 1.8rem !important; }
+    div[data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -193,16 +383,9 @@ def make_aoi(coords):
     }
 
 # ---------------------------------------------------------------
-# Core engine functions (same logic proven in the notebook)
+# Core engine functions (same logic as original)
 # ---------------------------------------------------------------
 def get_heat_index(polygon_aoi, date_str):
-    """
-    Pulls real humidity + apparent temperature from FortyGuard's
-    environmental_parameters endpoint at the site's centroid.
-    OSHA's actual 80°F/90°F triggers are based on heat index
-    (temperature + humidity combined), not raw air temperature —
-    this makes the risk grade closer to the real regulatory metric.
-    """
     coords = polygon_aoi["features"][0]["geometry"]["coordinates"][0]
     lons = [c[0] for c in coords]
     lats = [c[1] for c in coords]
@@ -293,12 +476,6 @@ def get_recommendation(risk_data, schedule_data, location):
 
 
 def generate_printable_report(risk_data, schedule_data, location):
-    """
-    Builds a single, self-contained HTML file: big icons, minimal text,
-    high color contrast. Works fully offline once downloaded — no internet,
-    no smartphone, no login needed. Meant to be printed and posted on-site
-    for workers of any literacy level or age.
-    """
     grade = risk_data["risk_grade"]
     percent = risk_data["percent_time_exceeded"]
     safest_name, safest_data = min(schedule_data.items(), key=lambda x: x[1]["avg_temp_f"])
@@ -324,22 +501,23 @@ def generate_printable_report(risk_data, schedule_data, location):
 <style>
   @media print {{ body {{ margin: 0; }} }}
   body {{
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
     max-width: 800px; margin: 0 auto; padding: 40px 30px;
     color: #1a1a1a;
+    background: #FFFFFF;
   }}
   .banner {{
     background: {color}; color: white; text-align: center;
-    padding: 30px 20px; border-radius: 10px; margin-bottom: 24px;
+    padding: 30px 20px; border-radius: 16px; margin-bottom: 24px;
   }}
   .banner .emoji {{ font-size: 64px; }}
-  .banner h1 {{ font-size: 34px; margin: 10px 0 0; letter-spacing: 1px; }}
+  .banner h1 {{ font-size: 34px; margin: 10px 0 0; letter-spacing: 1px; font-weight: 800; }}
   .meta {{ text-align: center; color: #555; font-size: 15px; margin-bottom: 30px; }}
   .rules {{ display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }}
   .rule {{
     display: flex; align-items: center; gap: 16px;
     background: #f4f4f4; border-left: 8px solid {color};
-    padding: 16px 20px; border-radius: 6px; font-size: 22px; font-weight: bold;
+    padding: 16px 20px; border-radius: 8px; font-size: 22px; font-weight: bold;
   }}
   .rule .icon {{ font-size: 36px; }}
   .best-time {{
@@ -382,14 +560,19 @@ def generate_printable_report(risk_data, schedule_data, location):
 # ---------------------------------------------------------------
 # UI — sidebar controls
 # ---------------------------------------------------------------
-st.sidebar.title("HeatIQ Controls")
-site_name = st.sidebar.selectbox("Monitored site", list(SITES.keys()))
-simple_mode = st.sidebar.toggle("👷 Simple View (for workers)", value=False,
+with st.sidebar:
+    st.markdown("### 🌡️ HeatIQ")
+    st.markdown("Controls")
+    site_name = st.selectbox("Monitored site", list(SITES.keys()))
+    simple_mode = st.toggle("👷 Simple View (for workers)", value=False,
                                   help="Big text, icons, no technical numbers — for any age or literacy level")
-run = st.sidebar.button("Run Live Analysis", type="primary", use_container_width=True)
+    run = st.button("Run Live Analysis", type="primary", use_container_width=True)
 
-st.title("HeatIQ — Heat Operations Command Center")
-st.caption("Hyperlocal thermal telemetry, converted into operational decisions. Not just where it's hot — what to do about it. Built on the FortyGuard Temperature API.")
+# ---------------------------------------------------------------
+# Main Content
+# ---------------------------------------------------------------
+st.title("Heat Operations Command Center")
+st.caption("Hyperlocal thermal telemetry, converted into operational decisions. Built on the FortyGuard Temperature API.")
 
 if run:
     aoi = make_aoi(SITES[site_name]["coords"])
@@ -420,7 +603,6 @@ if run:
         except Exception:
             heat_index = {"apparent_temp_f": None, "humidity_pct": None}
 
-    # Save results so toggling Simple View later doesn't re-trigger API calls
     st.session_state["results"] = {
         "site_name": site_name,
         "ex_stats": ex_stats,
@@ -439,7 +621,6 @@ if "results" in st.session_state:
     recommendation = get_recommendation(risk, schedules, site_name)
     report_html = generate_printable_report(risk, schedules, site_name)
 
-    # ---- Simple Mode: big icons, minimal text, any age/literacy level ----
     if simple_mode:
         grade_colors = {"CRITICAL": "#B00020", "HIGH": "#D35400", "MODERATE": "#B8860B", "LOW": "#1B7A3D"}
         grade_emoji = {"CRITICAL": "🔴", "HIGH": "🟠", "MODERATE": "🟡", "LOW": "🟢"}
@@ -454,17 +635,20 @@ if "results" in st.session_state:
         t = grade_text.get(risk["risk_grade"], "DANGER")
 
         st.markdown(
-            f"""<div style="background:{c}; color:white; text-align:center; padding:40px 20px; border-radius:14px; margin-bottom:20px;">
+            f"""<div style="background:{c}; color:white; text-align:center; padding:40px 20px; border-radius:16px; margin-bottom:20px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
                 <div style="font-size:70px;">{e}</div>
                 <div style="font-size:36px; font-weight:800; letter-spacing:1px;">{t}</div>
             </div>""",
             unsafe_allow_html=True,
         )
-        st.markdown("### 💧 Drink water every 30 minutes")
-        st.markdown("### 🏠 Rest in shade every 2 hours")
-        st.markdown("### ⏰ Take a 15-minute break every 2 hours")
-        st.markdown("### 👥 Never work alone — check on your partner")
-        st.markdown("### 🚨 Feel dizzy or sick? STOP and tell your supervisor")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("### 💧 Drink water every 30 minutes")
+            st.markdown("### 🏠 Rest in shade every 2 hours")
+            st.markdown("### ⏰ Take a 15-minute break every 2 hours")
+        with col2:
+            st.markdown("### 👥 Never work alone — check on your partner")
+            st.markdown("### 🚨 Feel dizzy or sick? STOP and tell your supervisor")
 
         st.download_button(
             "🖨️ Download Printable Safety Poster",
@@ -474,12 +658,17 @@ if "results" in st.session_state:
             use_container_width=True,
         )
 
-    # ---- Detailed Mode: full technical dashboard ----
     else:
         col1, col2 = st.columns([1, 2])
 
         with col1:
-            st.metric("OSHA Exposure Index", f"{risk['percent_time_exceeded']}%", risk["risk_grade"])
+            risk_color = {"CRITICAL": "#B00020", "HIGH": "#D35400", "MODERATE": "#B8860B", "LOW": "#1B7A3D"}.get(risk["risk_grade"], "#0B1A2F")
+            st.metric(
+                label="OSHA Exposure Index",
+                value=f"{risk['percent_time_exceeded']}%",
+                delta=risk["risk_grade"],
+                delta_color="off"
+            )
             st.progress(min(risk["percent_time_exceeded"] / 100, 1.0))
             st.write(f"**Hours above 90°F:** {risk['hours_above_threshold']} / 168")
             st.write(f"**Zones monitored:** {ex_stats['n_cells']}")
@@ -492,14 +681,22 @@ if "results" in st.session_state:
             st.subheader("⚠️ AI Dispatch")
             st.markdown(recommendation)
 
-        st.subheader("Schedule Exposure Comparison")
+        st.markdown("---")
+        st.subheader("📊 Schedule Exposure Comparison")
         sched_cols = st.columns(len(schedules))
         for col, (name, data) in zip(sched_cols, schedules.items()):
             with col:
-                st.metric(name, f"{data['avg_temp_f']}°F")
-                st.write("⚠️ Exceeds OSHA" if data["exceeds_osha"] else "✅ Within limits")
+                st.markdown(f"""
+                <div class="schedule-card">
+                    <div class="label">{name}</div>
+                    <div class="temp">{data['avg_temp_f']}°F</div>
+                    <div style="font-size:0.8rem; font-weight:600; color:{'#B00020' if data['exceeds_osha'] else '#1B7A3D'};">
+                        {'⚠️ Exceeds OSHA' if data['exceeds_osha'] else '✅ Within limits'}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
 
-        st.divider()
+        st.markdown("---")
         st.subheader("🖨️ Site Safety Poster")
         st.caption("A one-page, icon-based safety poster any worker can read — no smartphone or internet needed once printed.")
         st.download_button(
@@ -511,4 +708,4 @@ if "results" in st.session_state:
         )
 
 elif "results" not in st.session_state:
-    st.info("Select a site in the sidebar and click **Run Live Analysis** to pull real-time heat data.")
+    st.info("👈 Select a site in the sidebar and click **Run Live Analysis** to pull real-time heat data.")
