@@ -26,78 +26,100 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------
-# Custom styling — clean, professional dark theme
+# Custom styling — clean light dashboard, navy sidebar, card-based
 # ---------------------------------------------------------------
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 .stApp {
-    background: #0E0C12;
-    color: #EDEBEF;
+    background: #F4F6FB;
+    color: #1B2340;
 }
 
 * { font-family: 'Inter', sans-serif !important; }
 
+/* Sidebar — dark navy */
 section[data-testid="stSidebar"] {
-    background: #16131C;
-    border-right: 1px solid #2A2534;
+    background: #14213D;
+    border-right: none;
+}
+section[data-testid="stSidebar"] * { color: #E8ECF7 !important; }
+section[data-testid="stSidebar"] h1 { color: #FFFFFF !important; font-weight: 800 !important; }
+
+/* Sidebar dropdown */
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    background: #1E2E52 !important;
+    border-radius: 10px !important;
+    border: 1px solid #2C3E66 !important;
 }
 
+/* Main headings */
 h1 {
     font-weight: 800 !important;
-    font-size: 2.4rem !important;
+    font-size: 2.2rem !important;
+    color: #14213D !important;
     letter-spacing: -0.02em;
-    color: #FFFFFF !important;
 }
-h2, h3 { font-weight: 700 !important; color: #FFFFFF !important; }
+h2, h3 { font-weight: 700 !important; color: #14213D !important; }
+p, span, label, li { color: #5B6584; }
 
-p, span, label, div, li { color: #C9C6D1; }
-
-/* Metric cards */
+/* Metric cards — white, rounded, soft shadow */
 div[data-testid="stMetric"] {
-    background: #1A1721;
-    border: 1px solid #322C3D;
-    border-radius: 10px;
-    padding: 16px 20px;
+    background: #FFFFFF;
+    border: 1px solid #E7EAF3;
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: 0 2px 10px rgba(20,33,61,0.05);
 }
 div[data-testid="stMetricValue"] {
-    color: #FF7A45 !important;
-    font-weight: 700 !important;
+    color: #E8492E !important;
+    font-weight: 800 !important;
 }
-div[data-testid="stMetricLabel"] { color: #9691A0 !important; }
+div[data-testid="stMetricLabel"] { color: #8891AC !important; font-weight: 600 !important; }
+div[data-testid="stMetricDelta"] { color: #E8492E !important; }
 
-/* Primary button (Run Live Analysis) */
+/* Primary button */
 button[kind="primary"] {
-    background: #E8492E !important;
+    background: #3B5BFF !important;
     border: none !important;
-    font-weight: 600 !important;
-    border-radius: 8px !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 14px rgba(59,91,255,0.3);
 }
-button[kind="primary"]:hover { background: #D93E24 !important; }
+button[kind="primary"]:hover { background: #2E48D6 !important; }
+
+/* Sidebar toggle */
+section[data-testid="stSidebar"] div[data-testid="stToggle"] label { color: #E8ECF7 !important; }
 
 /* Progress bar */
 div[data-testid="stProgress"] div[role="progressbar"] > div {
     background: #E8492E !important;
+    border-radius: 6px;
 }
 
 /* Download button */
 button[data-testid="stDownloadButton"] {
-    background: #1DB3A0 !important;
-    color: #0E0C12 !important;
+    background: #14213D !important;
+    color: #FFFFFF !important;
     font-weight: 700 !important;
     border: none !important;
-    border-radius: 8px !important;
-}
-
-/* Info box */
-div[data-testid="stAlert"] {
-    background: #1A1721 !important;
-    border: 1px solid #322C3D !important;
     border-radius: 10px !important;
 }
 
-hr { border-color: #2A2534 !important; }
+/* Info / alert box */
+div[data-testid="stAlert"] {
+    background: #FFFFFF !important;
+    border: 1px solid #E7EAF3 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 10px rgba(20,33,61,0.05);
+}
+
+/* Section divider */
+hr { border-color: #E7EAF3 !important; }
+
+/* Caption text under title */
+[data-testid="stCaptionContainer"] { color: #8891AC !important; }
 </style>
 """, unsafe_allow_html=True)
 
