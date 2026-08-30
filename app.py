@@ -45,14 +45,26 @@ section[data-testid="stSidebar"] {
     border-right: none;
 }
 section[data-testid="stSidebar"] * { color: #E8ECF7 !important; }
-section[data-testid="stSidebar"] h1 { color: #FFFFFF !important; font-weight: 800 !important; }
+section[data-testid="stSidebar"] h1 {
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    border-left: 5px solid #F0651E;
+    padding-left: 14px;
+}
 
 /* Sidebar dropdown */
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    background: #1E2E52 !important;
+    background: #FFFFFF !important;
     border-radius: 10px !important;
     border: 1px solid #2C3E66 !important;
 }
+section[data-testid="stSidebar"] div[data-baseweb="select"] div,
+section[data-testid="stSidebar"] div[data-baseweb="select"] span {
+    color: #14213D !important;
+}
+
+/* Dropdown menu list (when opened) */
+div[data-baseweb="popover"] li { color: #14213D !important; }
 
 /* Main headings */
 h1 {
@@ -60,37 +72,41 @@ h1 {
     font-size: 2.2rem !important;
     color: #14213D !important;
     letter-spacing: -0.02em;
+    border-left: 5px solid #F0651E;
+    padding-left: 16px;
 }
 h2, h3 { font-weight: 700 !important; color: #14213D !important; }
 p, span, label, li { color: #5B6584; }
 
-/* Metric cards — white, rounded, soft shadow */
+/* Metric cards — white, rounded, soft shadow, warm top accent */
 div[data-testid="stMetric"] {
     background: #FFFFFF;
     border: 1px solid #E7EAF3;
+    border-top: 3px solid #F0651E;
     border-radius: 14px;
     padding: 18px 22px;
-    box-shadow: 0 2px 10px rgba(20,33,61,0.05);
+    box-shadow: 0 4px 16px rgba(240,101,30,0.08);
 }
 div[data-testid="stMetricValue"] {
-    color: #E8492E !important;
+    color: #F0651E !important;
     font-weight: 800 !important;
 }
 div[data-testid="stMetricLabel"] { color: #8891AC !important; font-weight: 600 !important; }
-div[data-testid="stMetricDelta"] { color: #E8492E !important; }
+div[data-testid="stMetricDelta"] { color: #F0651E !important; }
 
-/* Primary button */
+/* Primary button — warm heat gradient */
 button[kind="primary"] {
-    background: #3B5BFF !important;
+    background: linear-gradient(90deg, #F0651E, #E8492E) !important;
     border: none !important;
     font-weight: 700 !important;
     border-radius: 10px !important;
-    box-shadow: 0 4px 14px rgba(59,91,255,0.3);
+    box-shadow: 0 4px 14px rgba(240,101,30,0.35);
 }
-button[kind="primary"]:hover { background: #2E48D6 !important; }
+button[kind="primary"]:hover { background: linear-gradient(90deg, #D9560F, #D93E24) !important; }
 
-/* Sidebar toggle */
+/* Sidebar toggle — orange when on */
 section[data-testid="stSidebar"] div[data-testid="stToggle"] label { color: #E8ECF7 !important; }
+section[data-testid="stSidebar"] div[role="switch"][aria-checked="true"] { background: #F0651E !important; }
 
 /* Progress bar */
 div[data-testid="stProgress"] div[role="progressbar"] > div {
