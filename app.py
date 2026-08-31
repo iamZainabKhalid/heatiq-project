@@ -57,17 +57,55 @@ section[data-testid="stSidebar"] * { color: #E8EDF5 !important; }
 }
 .sidebar-brand .brand-sub { font-size: 0.68rem; color: #8899B0 !important; letter-spacing: 0.14em; text-transform: uppercase; }
 
+/* Fixed dropdown styling */
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    background: #FFFFFF !important; border-radius: 10px !important; border: 1px solid #2C3E66 !important;
+    background: #FFFFFF !important;
+    border-radius: 10px !important;
+    border: 1px solid #2C3E66 !important;
+    color: #14213D !important;
 }
+
 section[data-testid="stSidebar"] div[data-baseweb="select"] * {
-    color: #14213D !important; -webkit-text-fill-color: #14213D !important;
+    color: #14213D !important;
+    -webkit-text-fill-color: #14213D !important;
 }
-div[data-baseweb="popover"] { background: #FFFFFF !important; }
-div[data-baseweb="popover"] * { color: #14213D !important; -webkit-text-fill-color: #14213D !important; }
+
+/* Fixed popover/dropdown options with scrolling */
+div[data-baseweb="popover"] {
+    background: #FFFFFF !important;
+    border-radius: 10px !important;
+    border: 1px solid #E7EAF3 !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+}
+
+div[data-baseweb="popover"] * {
+    color: #14213D !important;
+    -webkit-text-fill-color: #14213D !important;
+}
+
+div[data-baseweb="popover"] div[role="option"] {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    color: #14213D !important;
+    -webkit-text-fill-color: #14213D !important;
+    background: #FFFFFF !important;
+}
+
+div[data-baseweb="popover"] div[role="option"]:hover {
+    background: #F0F4FA !important;
+}
+
+div[data-baseweb="popover"] div[role="option"][aria-selected="true"] {
+    background: #E8EDF7 !important;
+    font-weight: 600 !important;
+}
+
 div[data-baseweb="popover"] ul[role="listbox"] {
     max-height: 280px !important;
     overflow-y: auto !important;
+    padding: 4px 0 !important;
 }
 
 /* Hide the broken sidebar-collapse icon (shows as raw text when font fails to load) */
