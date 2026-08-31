@@ -5,7 +5,9 @@ applies US OSHA's proposed heat-safety thresholds, and recommends
 the safest work schedule for outdoor crews.
 """
 
+import os
 import pathlib
+import requests as http_requests
 from datetime import date, timedelta, datetime
 from zoneinfo import ZoneInfo  # stdlib — no extra dependency needed
 
@@ -263,31 +265,75 @@ def compare_schedules(polygon_aoi, date_str):
     return results
 
 
-def get_recommendation(risk_data, schedule_data, location):
+def get_ai_dispatch(risk_data, schedule_data, location):
+    """
+    Calls an LLM (via OpenRouter — free tier) to generate a human-readable
+    safety dispatch grounded in the real FortyGuard/OSHA numbers.
+    Falls back to a rule-based recommendation if the AI call fails or no
+    API key is set, so the demo never breaks due to network/API issues.
+    """
     grade = risk_data["risk_grade"]
     percent = risk_data["percent_time_exceeded"]
     safest_name, safest_data = min(schedule_data.items(), key=lambda x: x[1]["avg_temp_f"])
-
-    if grade == "CRITICAL":
-        action = "Suspend non-essential outdoor work during peak hours and enforce 15-minute breaks every 2 hours, consistent with OSHA's proposed High-Heat Trigger standard."
-    elif grade == "HIGH":
-        action = "Enforce paid rest breaks (15 min every 2 hours), consistent with OSHA's proposed High-Heat Trigger standard."
-    else:
-        action = "Continue standard hydration and shade protocols; monitor for changes."
-
     still_exceeds = "still exceeds" if safest_data["exceeds_osha"] else "stays within"
 
-    return (
-        f"**{grade} risk** at {location}, exceeding OSHA's proposed 90°F High-Heat threshold for "
-        f"**{percent}%** of the past week.\n\n"
-        f"**Recommendation:** {action}\n\n"
-        f"Of the schedules evaluated, **\"{safest_name}\"** shows the lowest average exposure "
-        f"at **{safest_data['avg_temp_f']}°F**. Even so, this {still_exceeds} OSHA limits — "
-        f"hydration stations, shaded rest areas, and buddy-system monitoring remain essential "
-        f"regardless of schedule.\n\n"
-        f"*Note: this tool models outdoor, ground-level conditions. Indoor workers face lower "
-        f"but non-zero heat risk from equipment and lack of airflow — separate indoor monitoring is recommended.*"
+    def rule_based_fallback():
+        if grade == "CRITICAL":
+            action = "Suspend non-essential outdoor work during peak hours and enforce 15-minute breaks every 2 hours, consistent with OSHA's proposed High-Heat Trigger standard."
+        elif grade == "HIGH":
+            action = "Enforce paid rest breaks (15 min every 2 hours), consistent with OSHA's proposed High-Heat Trigger standard."
+        else:
+            action = "Continue standard hydration and shade protocols; monitor for changes."
+        return (
+            f"**{grade} risk** at {location}, exceeding OSHA's proposed 90°F High-Heat threshold for "
+            f"**{percent}%** of the past week.\n\n"
+            f"**Recommendation:** {action}\n\n"
+            f"Of the schedules evaluated, **\"{safest_name}\"** shows the lowest average exposure "
+            f"at **{safest_data['avg_temp_f']}°F**. Even so, this {still_exceeds} OSHA limits — "
+            f"hydration stations, shaded rest areas, and buddy-system monitoring remain essential "
+            f"regardless of schedule.\n\n"
+            f"*Note: this tool models outdoor, ground-level conditions. Indoor workers face lower "
+            f"but non-zero heat risk from equipment and lack of airflow — separate indoor monitoring is recommended.*"
+        )
+
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        return rule_based_fallback()
+
+    prompt = (
+        f"Site: {location}\n"
+        f"OSHA heat risk grade: {grade}\n"
+        f"Percent of past week exceeding OSHA's 90°F High-Heat trigger: {percent}%\n"
+        f"Hours above threshold: {risk_data['hours_above_threshold']} of 168\n"
+        f"Schedule comparison (avg feels-like temp): {schedule_data}\n"
+        f"Safest schedule: {safest_name} at {safest_data['avg_temp_f']}°F ({still_exceeds} OSHA limits)\n\n"
+        "As HeatIQ's heat-safety dispatch agent, write a short (4-6 sentence) operational "
+        "recommendation for a site supervisor: state the risk level plainly, cite the key "
+        "numbers, recommend the safest work window, and give one concrete safety action "
+        "aligned with OSHA's proposed High-Heat Trigger standard."
     )
+
+    try:
+        response = http_requests.post(
+            url="https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "meta-llama/llama-3.1-8b-instruct:free",
+                "messages": [
+                    {"role": "system", "content": "You are HeatIQ's AI heat-safety dispatch agent for outdoor work crews."},
+                    {"role": "user", "content": prompt},
+                ],
+            },
+            timeout=15,
+        )
+        response.raise_for_status()
+        content = response.json()["choices"][0]["message"]["content"]
+        return content if content else rule_based_fallback()
+    except Exception:
+        return rule_based_fallback()
 
 
 def generate_printable_report(risk_data, schedule_data, location):
@@ -430,7 +476,8 @@ if "results" in st.session_state:
     schedules = st.session_state["results"]["schedules"]
     heat_index = st.session_state["results"].get("heat_index", {})
 
-    recommendation = get_recommendation(risk, schedules, site_name)
+    with st.spinner("Generating AI dispatch..."):
+        recommendation = get_ai_dispatch(risk, schedules, site_name)
     report_html = generate_printable_report(risk, schedules, site_name)
 
     if simple_mode:
